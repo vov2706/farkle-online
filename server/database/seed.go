@@ -20,8 +20,8 @@ func seedCurrencies() {
 	now := time.Now()
 	items := []models.Currency{
 		{Slug: models.BRONZE, Name: "Bronze", CreatedAt: now, UpdatedAt: now},
-		{Slug: models.SILVER, Name: "Silver", CreatedAt: now, UpdatedAt: now},
-		{Slug: models.GOLD, Name: "Gold", CreatedAt: now, UpdatedAt: now},
+		// 		{Slug: models.SILVER, Name: "Silver", CreatedAt: now, UpdatedAt: now},
+		// 		{Slug: models.GOLD, Name: "Gold", CreatedAt: now, UpdatedAt: now},
 	}
 
 	DB.Clauses(clause.OnConflict{

@@ -16,10 +16,31 @@ func Connect() {
 
 	dbName := config.Config("DB_NAME")
 
-	DB, err = gorm.Open(sqlite.Open(dbName+".db"), &gorm.Config{})
+	//newLogger := logger.New(
+	//	log.New(os.Stdout, "\r\n", log.LstdFlags),
+	//	logger.Config{
+	//		LogLevel:                  logger.Info,
+	//		IgnoreRecordNotFoundError: true,
+	//		Colorful:                  true,
+	//	},
+	//)
+
+	DB, err = gorm.Open(sqlite.Open(dbName+".db"), &gorm.Config{
+		SkipDefaultTransaction: true,
+		//Logger:                 newLogger,
+	})
 
 	if err != nil {
 		panic("failed to connect database")
+	}
+
+	sqlDB, err := DB.DB()
+	if err != nil {
+		panic(err)
+	}
+
+	if _, err := sqlDB.Exec("PRAGMA foreign_keys = ON"); err != nil {
+		panic(err)
 	}
 
 	fmt.Println("Connected to database")
@@ -34,6 +55,7 @@ func migrateAll() {
 		&models.User{},
 		&models.Currency{},
 		&models.Balance{},
+		&models.Game{},
 		&models.GameUser{},
 	)
 
@@ -45,7 +67,7 @@ func migrateAll() {
 }
 
 func setupRelations() {
-	err := DB.SetupJoinTable(&models.Game{}, "Users", &models.GameUser{})
+	err := DB.SetupJoinTable(&models.Game{}, "Players", &models.GameUser{})
 
 	if err != nil {
 		panic(fmt.Errorf("failed to setup relations: %w", err))

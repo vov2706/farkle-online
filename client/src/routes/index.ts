@@ -1,16 +1,29 @@
 import {createWebHistory, createRouter, type RouteRecordRaw} from "vue-router";
 import {useAuthStore} from "@/stores/auth.ts";
+import {getLastCreatedGame} from "@/api/game.ts";
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('../pages/home/Index.vue') },
   { path: '/login', name: 'login', component: () => import('../pages/auth/Login.vue') },
   { path: '/register', name: 'register', component: () => import('../pages/auth/Registration.vue') },
   { path: '/profile', name: 'profile', component: () => import('../pages/profile/Profile.vue') },
-  { path: '/create', name: 'create', component: () => import('../pages/lobby/CreateLobby.vue') },
+  {
+    path: '/create',
+    name: 'create',
+    component: () => import('../pages/lobby/CreateLobby.vue'),
+    beforeEnter: async (_to, _from, next) => {
+      const game = await getLastCreatedGame()
+
+      if (game) return next({ name: 'lobby', params: { code: game.code } })
+
+      next()
+    }
+  },
   { path: '/join', name: 'join', component: () => import('../pages/lobby/JoinLobby.vue') },
   { path: '/leaderboard', name: 'leaderboard', component: () => import('../pages/leaderboard/LeaderboardList.vue') },
   { path: '/lobby/:code', name: 'lobby', component: () => import('../pages/lobby/LobbyRoom.vue') },
-  { path: '/room/:code', name: 'room', component: () => import('../pages/game/GameRoom.vue') },
+  { path: '/game/:code', name: 'game', component: () => import('../pages/game/GameRoom.vue') },
+  { path: '/:pathMatch(.*)*', name: 'not_found', component: () => import('@/pages/errors/NotFound.vue'),}
 ]
 
 const router = createRouter({

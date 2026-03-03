@@ -1,11 +1,26 @@
 <script setup lang="ts">
 import ToastsHost from "./components/ToastsHost.vue";
+import { useConfirm } from "@/composables/useConfirm";
+import UiConfirmModal from "@/components/UiConfirmModal.vue";
+
+const confirm = useConfirm();
 </script>
 
 <template>
   <div class="app-root">
     <RouterView />
     <ToastsHost />
+    <UiConfirmModal
+      v-model="confirm.isOpen.value"
+      :title="confirm.options.value.title"
+      :message="confirm.options.value.message"
+      :confirm-text="confirm.options.value.confirmText"
+      :cancel-text="confirm.options.value.cancelText"
+      :tone="confirm.options.value.tone"
+      :loading="confirm.loading.value"
+      @confirm="confirm.onConfirm()"
+      @cancel="confirm.onCancel"
+    />
   </div>
 </template>
 

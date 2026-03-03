@@ -3,6 +3,20 @@
   <component name="GoORMHelperCache">
     <option name="schemaMapping">
       <map>
+        <entry key="AuthHandler">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/handlers/auth_handler.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="AuthService">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/services/auth_service.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="Balance">
           <value>
             <set>
@@ -20,14 +34,14 @@
         <entry key="BalanceResource">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/server/responses/user.go" />
+              <option value="file://$PROJECT_DIR$/server/http/responses/balance.go" />
             </set>
           </value>
         </entry>
         <entry key="CreateGameInput">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/server/inputs/game.go" />
+              <option value="file://$PROJECT_DIR$/server/http/inputs/create_game_input.go" />
             </set>
           </value>
         </entry>
@@ -35,6 +49,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/server/models/currency.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="CurrencyHandler">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/handlers/currency_handler.go" />
             </set>
           </value>
         </entry>
@@ -55,7 +76,7 @@
         <entry key="CurrencyResource">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/server/responses/currency.go" />
+              <option value="file://$PROJECT_DIR$/server/http/responses/currency.go" />
             </set>
           </value>
         </entry>
@@ -84,7 +105,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/server/http/responses/game.go" />
-              <option value="file://$PROJECT_DIR$/server/responses/game.go" />
             </set>
           </value>
         </entry>
@@ -102,10 +122,66 @@
             </set>
           </value>
         </entry>
+        <entry key="Hub">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/ws/hub.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Incoming">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/routes/broadcasts.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="LoginInput">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/server/handlers/auth.go" />
+              <option value="file://$PROJECT_DIR$/server/http/inputs/login_input.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PaginatedResponse">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/responses/pagination.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PaginationMeta">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/responses/pagination.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PlayerResource">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/responses/game.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PlayerToggleInput">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/routes/broadcasts.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="QueryExtractor">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/middlewares/ws_auth.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="QueryTokenExtractor">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/middlewares/ws_auth.go" />
             </set>
           </value>
         </entry>
@@ -116,17 +192,38 @@
             </set>
           </value>
         </entry>
+        <entry key="UserHandler">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/http/handlers/user_handler.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UserRepository">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/repositories/user_repository.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="UserResource">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/server/responses/user.go" />
+              <option value="file://$PROJECT_DIR$/server/http/responses/user.go" />
             </set>
           </value>
         </entry>
         <entry key="UserResponse">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/server/responses/user.go" />
+              <option value="file://$PROJECT_DIR$/server/http/responses/user.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UserService">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/server/services/user_service.go" />
             </set>
           </value>
         </entry>
@@ -134,6 +231,13 @@
     </option>
     <option name="scannedPathMapping">
       <map>
+        <entry key="file://$PROJECT_DIR$/server/broadcasts.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772551665175" />
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/server/config/config.go">
           <value>
             <ScannedPath>
@@ -144,21 +248,28 @@
         <entry key="file://$PROJECT_DIR$/server/database/connect.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771360325037" />
+              <option name="lastModified" value="1772400972279" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/server/database/database.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1770744893620" />
+              <option name="lastModified" value="1771770068054" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/database/scopes.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1771977212481" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/server/database/seed.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771437676960" />
+              <option name="lastModified" value="1772309656217" />
               <option name="schema">
                 <list>
                   <option value="CurrencyItem" />
@@ -167,43 +278,34 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/handlers/auth.go">
+        <entry key="file://$PROJECT_DIR$/server/http/handlers/auth_handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771001561357" />
+              <option name="lastModified" value="1772490134939" />
               <option name="schema">
                 <list>
-                  <option value="LoginInput" />
+                  <option value="AuthHandler" />
                 </list>
               </option>
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/handlers/currency.go">
+        <entry key="file://$PROJECT_DIR$/server/http/handlers/currency_handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771358489080" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/server/handlers/game.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1771439605556" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/server/handlers/user.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1771437637127" />
+              <option name="lastModified" value="1772387977955" />
+              <option name="schema">
+                <list>
+                  <option value="CurrencyHandler" />
+                </list>
+              </option>
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/server/http/handlers/game_handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771442772373" />
+              <option name="lastModified" value="1772401420541" />
               <option name="schema">
                 <list>
                   <option value="GameHandler" />
@@ -212,29 +314,22 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/http/handlers/user.go">
+        <entry key="file://$PROJECT_DIR$/server/http/handlers/user_handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771440018009" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/server/http/responses/game.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1771440018139" />
+              <option name="lastModified" value="1772543167360" />
               <option name="schema">
                 <list>
-                  <option value="GameResource" />
+                  <option value="UserHandler" />
                 </list>
               </option>
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/inputs/game.go">
+        <entry key="file://$PROJECT_DIR$/server/http/inputs/create_game_input.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771364218222" />
+              <option name="lastModified" value="1771525499810" />
               <option name="schema">
                 <list>
                   <option value="CreateGameInput" />
@@ -243,17 +338,106 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/main.go">
+        <entry key="file://$PROJECT_DIR$/server/http/inputs/login_input.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771077256371" />
+              <option name="lastModified" value="1772386879749" />
+              <option name="schema">
+                <list>
+                  <option value="LoginInput" />
+                </list>
+              </option>
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/middlewares/auth.go">
+        <entry key="file://$PROJECT_DIR$/server/http/middlewares/auth.go">
           <value>
             <ScannedPath>
               <option name="lastModified" value="1770841435483" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/middlewares/ws.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772567619881" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/middlewares/ws_auth.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772566816359" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/responses/balance.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1771799713108" />
+              <option name="schema">
+                <list>
+                  <option value="BalanceResource" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/responses/currency.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1771366192838" />
+              <option name="schema">
+                <list>
+                  <option value="CurrencyResource" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/responses/game.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772058581333" />
+              <option name="schema">
+                <list>
+                  <option value="GameResource" />
+                  <option value="PlayerResource" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/responses/pagination.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1771978016781" />
+              <option name="schema">
+                <list>
+                  <option value="PaginationMeta" />
+                  <option value="PaginatedResponse" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/http/responses/user.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772385787277" />
+              <option name="schema">
+                <list>
+                  <option value="UserResponse" />
+                  <option value="UserResource" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/main.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772567763192" />
             </ScannedPath>
           </value>
         </entry>
@@ -284,7 +468,7 @@
         <entry key="file://$PROJECT_DIR$/server/models/game.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771361154565" />
+              <option name="lastModified" value="1772058369123" />
               <option name="schema">
                 <list>
                   <option value="Game" />
@@ -297,7 +481,7 @@
         <entry key="file://$PROJECT_DIR$/server/models/user.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771439825367" />
+              <option name="lastModified" value="1772384507761" />
               <option name="schema">
                 <list>
                   <option value="User" />
@@ -309,7 +493,7 @@
         <entry key="file://$PROJECT_DIR$/server/repositories/balance_repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771439825759" />
+              <option name="lastModified" value="1772489196234" />
               <option name="schema">
                 <list>
                   <option value="BalanceRepository" />
@@ -321,7 +505,7 @@
         <entry key="file://$PROJECT_DIR$/server/repositories/currency_repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771442459229" />
+              <option name="lastModified" value="1772389849002" />
               <option name="schema">
                 <list>
                   <option value="CurrencyRepository" />
@@ -333,7 +517,7 @@
         <entry key="file://$PROJECT_DIR$/server/repositories/game_repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771442192908" />
+              <option name="lastModified" value="1772402232507" />
               <option name="schema">
                 <list>
                   <option value="GameRepository" />
@@ -342,39 +526,25 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/responses/currency.go">
+        <entry key="file://$PROJECT_DIR$/server/repositories/user_repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771366192838" />
+              <option name="lastModified" value="1772489196241" />
               <option name="schema">
                 <list>
-                  <option value="CurrencyResource" />
+                  <option value="UserRepository" />
                 </list>
               </option>
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/responses/game.go">
+        <entry key="file://$PROJECT_DIR$/server/routes/broadcasts.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771367263083" />
+              <option name="lastModified" value="1772569793793" />
               <option name="schema">
                 <list>
-                  <option value="GameResource" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/server/responses/user.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1771366210246" />
-              <option name="schema">
-                <list>
-                  <option value="UserResponse" />
-                  <option value="UserResource" />
-                  <option value="BalanceResource" />
+                  <option value="PlayerToggleInput" />
                 </list>
               </option>
             </ScannedPath>
@@ -383,14 +553,26 @@
         <entry key="file://$PROJECT_DIR$/server/routes/router.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771442459189" />
+              <option name="lastModified" value="1772551674913" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/services/auth_service.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772402353970" />
+              <option name="schema">
+                <list>
+                  <option value="AuthService" />
+                </list>
+              </option>
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/server/services/game_service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1771442459186" />
+              <option name="lastModified" value="1772402232494" />
               <option name="schema">
                 <list>
                   <option value="GameService" />
@@ -399,10 +581,41 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/server/utils/password.go">
+        <entry key="file://$PROJECT_DIR$/server/services/user_service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1770761019543" />
+              <option name="lastModified" value="1772489391850" />
+              <option name="schema">
+                <list>
+                  <option value="UserService" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/utils/handlers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1771973596161" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/utils/relations.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1771788903864" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/server/ws/hub.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772565201554" />
+              <option name="schema">
+                <list>
+                  <option value="Hub" />
+                </list>
+              </option>
             </ScannedPath>
           </value>
         </entry>
@@ -410,11 +623,14 @@
     </option>
     <option name="tableStructMapping">
       <map>
+        <entry key="auth_handler" value="AuthHandler" />
+        <entry key="auth_service" value="AuthService" />
         <entry key="balance" value="Balance" />
         <entry key="balance_repository" value="BalanceRepository" />
         <entry key="balance_resource" value="BalanceResource" />
         <entry key="create_game_input" value="CreateGameInput" />
         <entry key="currency" value="Currency" />
+        <entry key="currency_handler" value="CurrencyHandler" />
         <entry key="currency_item" value="CurrencyItem" />
         <entry key="currency_repository" value="CurrencyRepository" />
         <entry key="currency_resource" value="CurrencyResource" />
@@ -424,12 +640,23 @@
         <entry key="game_resource" value="GameResource" />
         <entry key="game_service" value="GameService" />
         <entry key="game_user" value="GameUser" />
+        <entry key="hub" value="Hub" />
+        <entry key="incoming" value="Incoming" />
         <entry key="login_input" value="LoginInput" />
+        <entry key="paginated_response" value="PaginatedResponse" />
+        <entry key="pagination_meta" value="PaginationMeta" />
+        <entry key="player_resource" value="PlayerResource" />
+        <entry key="player_toggle_input" value="PlayerToggleInput" />
+        <entry key="query_extractor" value="QueryExtractor" />
+        <entry key="query_token_extractor" value="QueryTokenExtractor" />
         <entry key="user" value="User" />
+        <entry key="user_handler" value="UserHandler" />
+        <entry key="user_repository" value="UserRepository" />
         <entry key="user_resource" value="UserResource" />
         <entry key="user_response" value="UserResponse" />
+        <entry key="user_service" value="UserService" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1771436917523" />
+    <option name="lastTimeChecked" value="1772480345400" />
   </component>
 </project>

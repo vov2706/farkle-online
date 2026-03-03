@@ -7,33 +7,26 @@ type UserResponse struct {
 }
 
 type UserResource struct {
-	ID       uint            `json:"id"`
-	Username string          `json:"username"`
-	Balance  BalanceResource `json:"balance"`
-}
-
-type BalanceResource struct {
-	Amount   uint             `json:"amount"`
-	Currency CurrencyResource `json:"currency"`
+	ID          uint              `json:"id"`
+	Username    string            `json:"username"`
+	CurrentGame *models.Game      `json:"current_game,omitempty"`
+	Balances    []BalanceResource `json:"balances,omitempty"`
 }
 
 func NewUserResource(user models.User) UserResource {
-	var balance BalanceResource
+	var balances []BalanceResource
 
-	if len(user.Balances) > 0 {
-		for _, b := range user.Balances {
-			balance = BalanceResource{
-				Amount:   b.Amount,
-				Currency: NewCurrencyResource(b.Currency),
-			}
-
-			break
-		}
+	for _, balance := range user.Balances {
+		balances = append(balances, NewBalanceResource(
+			balance.Amount,
+			NewCurrencyResource(balance.Currency),
+		))
 	}
 
 	return UserResource{
-		ID:       user.ID,
-		Username: user.Username,
-		Balance:  balance,
+		ID:          user.ID,
+		Username:    user.Username,
+		Balances:    balances,
+		CurrentGame: user.CurrentGame,
 	}
 }

@@ -5,7 +5,7 @@ import { onClickOutside } from "@vueuse/core"
 export type Option = {
   label: string
   value: string | number
-  icon?: string
+  type?: string
 }
 
 const props = defineProps<{
@@ -43,19 +43,10 @@ onClickOutside(root, () => {
       @click.stop="isOpen = !isOpen"
       class="w-full rounded-xl border border-wood-700/35 bg-parchment-50/70 px-4 py-2 text-base text-left flex items-center justify-between transition hover:border-candle-400/60"
     >
-      <!-- ВАЖЛИВО: не div всередині button -->
-      <span class="flex items-center gap-2 min-w-0">
-        <img
-          v-if="selected?.icon"
-          :src="selected.icon"
-          class="w-5 h-5"
-          :alt="selected.label"
-        />
-        <span class="truncate">
-          {{ selected?.label || placeholder || "Select option" }}
-        </span>
-      </span>
-
+      <slot v-if="selected" name="option" :option="selected">
+        {{ selected.label }}
+      </slot>
+      <span v-else class="truncate">Select an option</span>
       <span class="transition-transform duration-200" :class="{ 'rotate-180': isOpen }">
         ▾
       </span>
@@ -82,8 +73,9 @@ onClickOutside(root, () => {
           @mousedown.prevent
           @click.prevent="selectOption(option)"
         >
-          <img v-if="option.icon" :src="option.icon" class="w-5 h-5" />
-          <span class="truncate">{{ option.label }}</span>
+          <slot name="option" :option="option">
+            {{ option.label }}
+          </slot>
         </button>
       </div>
     </transition>

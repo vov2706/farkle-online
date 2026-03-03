@@ -1,5 +1,6 @@
 import fetchApi from '../packages/fetchApi.ts';
 import type {Currency} from "@/api/common.ts";
+import type {Game} from "@/api/game.ts";
 
 export interface Balance {
   amount: number
@@ -8,8 +9,9 @@ export interface Balance {
 
 export interface User {
   id: number
-  username: number
+  username: string
   balance: Balance
+  current_game?: Game | null
 }
 
 export const getProfile = async () => {

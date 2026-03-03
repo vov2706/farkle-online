@@ -55,20 +55,19 @@ const doLogout = () => {
 
 <template>
   <div
-    v-if="props.withHeader"
     class="min-h-dvh w-full
            flex flex-col justify-between
            px-3 py-4 sm:px-6 sm:py-6
            bg-[radial-gradient(circle_at_50%_20%,rgba(212,145,57,.22),transparent_60%)]
            "
   >
-    <header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <header v-if="props.withHeader" class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div @click="$router.push('/')" class="cursor-pointer">
         <div class="text-candle-200 font-display tracking-[0.06em] text-2xl">
-          Tavern Dice
+          Farkle Online
         </div>
         <div class="text-parchment-50/70">
-          Multiplayer dice in a tavern mood.
+          Multiplayer dice in a tavern mode.
         </div>
       </div>
 
@@ -81,34 +80,32 @@ const doLogout = () => {
             :aria-expanded="menuOpen"
             aria-haspopup="menu"
           >
-            <span>👤 {{ user.username }}</span>
-
+            <span>👤 {{ user?.username }}</span>
             <span class="mx-1 h-4 w-px bg-parchment-50/20"></span>
-
-            <span class="flex items-center gap-1 text-parchment-50/90">
-              <span class="tabular-nums text-md font-bold">{{ balance?.amount ?? 0 }}</span>
-              <img
-                width="25px"
-                height="25px"
-                alt="balance"
-                v-if="balance?.currency?.icon" :src="balance.currency.icon"
-              />
-            </span>
-
             <span class="ml-1 text-parchment-50/60">▾</span>
           </button>
 
           <!-- Popover -->
+          <!-- Popover -->
           <transition name="fade-pop">
             <div
               v-if="menuOpen"
-              class="absolute right-0 mt-2 w-44 rounded-2xl border border-parchment-50/15
-                     bg-[#0f0c07]/95 backdrop-blur-md shadow-xl overflow-hidden"
+              class="
+                absolute right-0 mt-2 w-48
+                z-[9999]
+                rounded-2xl
+                border border-parchment-50/20
+                bg-[#0b0906]/95
+                backdrop-blur-md
+                shadow-[0_18px_60px_rgba(0,0,0,.55)]
+                ring-1 ring-black/30
+                overflow-hidden
+              "
               role="menu"
             >
               <button
                 type="button"
-                class="w-full text-left px-3 py-2 text-parchment-50/90 hover:bg-parchment-50/10 transition"
+                class="w-full text-left px-3 py-2.5 text-parchment-50/95 hover:bg-parchment-50/10 transition"
                 role="menuitem"
                 @click="goProfile"
               >
@@ -119,7 +116,7 @@ const doLogout = () => {
 
               <button
                 type="button"
-                class="w-full text-left px-3 py-2 text-parchment-50/90 hover:bg-parchment-50/10 transition"
+                class="w-full text-left px-3 py-2.5 text-parchment-50/95 hover:bg-parchment-50/10 transition"
                 role="menuitem"
                 @click="doLogout"
               >
@@ -145,7 +142,7 @@ const doLogout = () => {
     </main>
 
     <footer v-if="props.withFooter" class="mt-8 text-parchment-50/50 text-sm text-center">
-      <span>© {{ new Date().getFullYear() }} Tavern Dice. All Rights Reserved</span>
+      <span>© {{ new Date().getFullYear() }} Farkle online. All Rights Reserved</span>
     </footer>
   </div>
 </template>

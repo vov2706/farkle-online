@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import {type Currency, getCurrencies} from "@/api/common.ts";
 import UiSelect from "@/components/UiSelect.vue";
 import {createGame, type CreateGameInput, type Game, JoinType} from "@/api/game.ts";
+import CurrencyIcon, {type CurrencyType} from "@/components/CurrencyIcon.vue";
 
 const types = [
   {slug: JoinType.ANYONE, title: 'Anyone can join', subtitle: 'Visible & open'},
@@ -16,19 +17,18 @@ const types = [
 const router = useRouter()
 const currencies = ref<Currency[]>([])
 
-const currencyId = ref<number>(currencies.value[0]?.id ?? 1)
+const currencyId = ref<number|undefined>(currencies.value[0]?.id)
 const bet = ref<number>(10)
 const winningPoints = ref<number>(3000)
 const joinType = ref<JoinType>(JoinType.ANYONE)
 
-// --- ui state
 const loading = ref(false)
 const error = ref('')
 const game = ref<Game | null>(null)
 
 const betValid = computed(() => Number.isFinite(bet.value) && bet.value > 0)
 const pointsValid = computed(() => Number.isFinite(winningPoints.value) && winningPoints.value > 0)
-const currencyValid = computed(() => Number.isFinite(currencyId.value) && currencyId.value > 0)
+const currencyValid = computed(() => Number.isFinite(currencyId.value) && (currencyId.value ?? 0) > 0)
 const joinTypeValid = computed(() => !!joinType.value)
 
 const canCreate = computed(() => !loading.value && betValid.value && pointsValid.value && currencyValid.value && joinTypeValid.value)
@@ -36,6 +36,10 @@ const canCreate = computed(() => !loading.value && betValid.value && pointsValid
 const selectedCurrency = computed(() => currencies.value.find(c => c.id === currencyId.value))
 
 const createRoom = async () => {
+  if (!currencyId.value) {
+    return;
+  }
+
   error.value = ''
   loading.value = true
   try {
@@ -109,8 +113,23 @@ onMounted(async () => {
               <div class="mt-2">
                 <UiSelect
                   v-model="currencyId"
-                  :options="currencies.map((c: Currency) => ({label: c.name, value: c.id}))"
-                />
+                  :options="currencies.map((c: Currency) => ({
+                    label: c.name,
+                    value: c.id,
+                    type: c.slug,
+                  }))"
+                >
+                  <template #option="{ option }">
+                    <div class="flex items-center gap-2">
+                      <CurrencyIcon :type="option.type as CurrencyType" :size="16" />
+                      {{ option.label }}
+                    </div>
+                  </template>
+<!--                  <slot name="option">-->
+<!--                    <img v-if="option.icon" :src="option.icon" class="w-5 h-5" />-->
+<!--                    <span class="truncate">{{ option.label }}</span>-->
+<!--                  </slot>-->
+                </UiSelect>
                 <div v-if="!currencyValid" class="mt-1 text-base text-danger-600">
                   Select a currency.
                 </div>
@@ -191,23 +210,16 @@ onMounted(async () => {
         <div class="lg:col-span-5">
           <div class="font-display text-lg">Preview</div>
 
-          <div class="mt-3 rounded-[var(--radius-tavern)] border border-wood-700/30 bg-tavern-900/50 p-4">
-            <div class="text-base text-parchment-50/70">Room will be created as:</div>
+          <div class="mt-3 rounded-tavern border border-wood-700/30 bg-tavern-900/50 p-4">
+            <div class="text-xl text-parchment-50/70">Room will be created as:</div>
 
-            <div class="mt-3 space-y-2">
-              <div class="chip flex gap-1 text-base">
-                💰 Bet: <span class="font-bold text-base">{{ bet }}</span>
-<!--                <img-->
-<!--                  v-if="selectedCurrency?.icon"-->
-<!--                  :src="selectedCurrency.icon"-->
-<!--                  :alt="selectedCurrency?.name"-->
-<!--                  width="20"-->
-<!--                  height="20"-->
-<!--                />-->
-                <span>{{ selectedCurrency?.name ?? '—' }}</span>
+            <div class="mt-3 space-y-2 text-lg">
+              <div class="chip flex gap-1">
+                💰 Bet: <span class="font-bold">{{ bet }}</span>
+                <CurrencyIcon v-if="selectedCurrency" :type="selectedCurrency.slug as CurrencyType" :size="20" />
               </div>
               <div class="chip">
-                🏁 Winning points: <span class="font-bold text-base">{{ winningPoints }}</span>
+                🏁 Winning points: <span class="font-bold">{{ winningPoints }}</span>
               </div>
               <div class="chip">
                 🔒 Join:
@@ -215,10 +227,6 @@ onMounted(async () => {
                 <span class="font-bold underline" v-else-if="joinType === JoinType.FRIENDS">Only friends</span>
                 <span class="font-bold underline" v-else>Join by link</span>
               </div>
-            </div>
-
-            <div class="mt-4 text-parchment-50/70 text-sm">
-              After creation you’ll get a code to share.
             </div>
           </div>
         </div>
