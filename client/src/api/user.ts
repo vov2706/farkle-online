@@ -1,5 +1,5 @@
 import fetchApi from '../packages/fetchApi.ts';
-import type {Currency} from "@/api/common.ts";
+import type {Currency} from "@/api/currency.ts";
 import type {Game} from "@/api/game.ts";
 
 export interface Balance {
@@ -10,7 +10,7 @@ export interface Balance {
 export interface User {
   id: number
   username: string
-  balance: Balance
+  balances: Balance[]
   current_game?: Game | null
 }
 

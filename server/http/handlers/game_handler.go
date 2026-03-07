@@ -5,6 +5,7 @@ import (
 	"app/http/responses"
 	"app/services"
 	"app/utils"
+	"app/ws"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
@@ -13,10 +14,19 @@ import (
 type GameHandler struct {
 	gameService *services.GameService
 	auth        *services.AuthService
+	hub         *ws.Hub
 }
 
-func NewGameHandler(gameService *services.GameService, authService *services.AuthService) *GameHandler {
-	return &GameHandler{gameService: gameService, auth: authService}
+func NewGameHandler(
+	gameService *services.GameService,
+	authService *services.AuthService,
+	hub *ws.Hub,
+) *GameHandler {
+	return &GameHandler{
+		gameService: gameService,
+		auth:        authService,
+		hub:         hub,
+	}
 }
 
 func (handler *GameHandler) Store(c fiber.Ctx) error {
@@ -108,7 +118,7 @@ func (handler *GameHandler) Leave(c fiber.Ctx) error {
 		return err
 	}
 
-	err = handler.gameService.LeaveCurrentGame(*authUser)
+	err = handler.gameService.LeaveCurrentGame(authUser)
 
 	if err != nil {
 		return err
@@ -126,7 +136,7 @@ func (handler *GameHandler) GetCurrentGame(c fiber.Ctx) error {
 		return err
 	}
 
-	game := handler.gameService.GetCurrentGame(*authUser)
+	game := handler.gameService.GetCurrentGame(authUser)
 
 	if game != nil {
 		return c.JSON(responses.NewGameResource(*game))
@@ -136,26 +146,25 @@ func (handler *GameHandler) GetCurrentGame(c fiber.Ctx) error {
 }
 
 func (handler *GameHandler) Join(c fiber.Ctx) error {
-	id, err := utils.ConvertRouteParamToUint(c, "id")
-
-	if err != nil {
-		return err
-	}
-
+	code := c.Params("code")
 	authUser, err := handler.auth.GetAuthUser(c)
 
 	if err != nil {
 		return err
 	}
 
-	game, err := handler.gameService.JoinToGame(authUser, id)
+	game, err := handler.gameService.JoinToGame(authUser, code)
 
 	if err != nil {
 		return err
 	}
 
+	ch := "presence-lobby:" + game.Code
+	handler.hub.Broadcast(ch, ws.Event("lobby.player_joined", ch, fiber.Map{
+		"player": authUser.Username,
+	}))
+
 	return c.JSON(fiber.Map{
-		"message": "Joined to game",
-		"game":    responses.NewGameResource(*game),
+		"game": responses.NewGameResource(*game),
 	})
 }

@@ -2,10 +2,9 @@ package main
 
 import (
 	"app/config"
+	"app/container"
 	"app/database"
-	"app/repositories"
 	"app/routes"
-	"app/services"
 	"log"
 
 	"github.com/gofiber/fiber/v3"
@@ -24,8 +23,11 @@ func main() {
 	}))
 
 	database.Connect()
-	routes.SetupBroadcasts(app, services.NewAuthService(repositories.NewUserRepository(database.DB)))
-	routes.SetupRoutes(app)
+
+	ctn := container.New()
+
+	routes.SetupBroadcasts(app, ctn)
+	routes.SetupRoutes(app, ctn)
 
 	log.Fatal(app.Listen(":" + config.Config("API_PORT")))
 }

@@ -7,6 +7,7 @@ import (
 	"app/utils"
 	"context"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -59,7 +60,7 @@ func (repo *GameRepository) FindGameById(id uint, relations ...string) (*models.
 		query = utils.ApplyRelations(query, relations)
 	}
 
-	game, err := query.Select("*").First(ctx)
+	game, err := query.First(ctx)
 
 	if err != nil {
 		return nil, err
@@ -68,7 +69,7 @@ func (repo *GameRepository) FindGameById(id uint, relations ...string) (*models.
 	return &game, nil
 }
 
-func (repo *GameRepository) FindGameByCode(code string, relations ...string) (models.Game, error) {
+func (repo *GameRepository) FindGameByCode(code string, relations ...string) (*models.Game, error) {
 	ctx := context.Background()
 	query := gorm.G[models.Game](database.DB).Where("code = ?", code)
 
@@ -76,7 +77,38 @@ func (repo *GameRepository) FindGameByCode(code string, relations ...string) (mo
 		query = utils.ApplyRelations(query, relations)
 	}
 
-	return query.First(ctx)
+	game, err := query.First(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &game, nil
+}
+
+func (repo *GameRepository) FindNewGameByCodeAndCreator(code string, userId uint) (*models.Game, error) {
+	ctx := context.Background()
+
+	game, err := gorm.G[models.Game](database.DB).
+		Where("code = ?", code).
+		Where("creator_id = ?", userId).
+		First(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &game, nil
+}
+
+func (repo *GameRepository) StartGame(game *models.Game, startsAt time.Time) error {
+	ctx := context.Background()
+
+	_, err := gorm.G[models.Game](database.DB).
+		Where("id = ?", game.ID).
+		Update(ctx, "started_at", startsAt)
+
+	return err
 }
 
 func (repo *GameRepository) GetNewGames(authUserId, page, perPage uint, search string) ([]models.Game, uint, error) {
@@ -120,7 +152,7 @@ func (repo *GameRepository) FindCurrentGame(userId uint) (models.Game, error) {
 	return game, err
 }
 
-func (repo *GameRepository) DeleteGame(creator models.User, game models.Game) error {
+func (repo *GameRepository) DeleteGame(creator *models.User, game *models.Game) error {
 	ctx := context.Background()
 
 	return database.DB.Transaction(func(tx *gorm.DB) error {
@@ -144,10 +176,10 @@ func (repo *GameRepository) DeleteGame(creator models.User, game models.Game) er
 	})
 }
 
-func (repo *GameRepository) DetachUserFromGame(user models.User, game models.Game) error {
+func (repo *GameRepository) DetachUserFromGame(user *models.User, game *models.Game) error {
 	return database.DB.Model(&user).Association("Games").Delete(game)
 }
 
-func (repo *GameRepository) AttachUserToGame(user models.User, game models.Game) error {
+func (repo *GameRepository) AttachUserToGame(user *models.User, game *models.Game) error {
 	return database.DB.Model(&user).Association("Games").Append(game)
 }

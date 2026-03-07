@@ -1,5 +1,5 @@
 import fetchApi from "@/packages/fetchApi.ts";
-import type {Currency} from "@/api/common.ts";
+import type {Currency} from "@/api/currency.ts";
 import type {User} from "@/api/user.ts";
 
 export enum JoinType {
@@ -16,7 +16,6 @@ export interface CreateGameInput {
 }
 
 export interface Game {
-  id: number
   code: string
   bet: number
   creator_id: number
@@ -69,6 +68,6 @@ export const getGames = async (params: GetGamesInput) => {
   return data;
 }
 
-export const joinGame = async (id: number) => {
-  return fetchApi.post(`/games/join/${id}`)
+export const joinGame = async (code: string) => {
+  return fetchApi.post(`/games/join/${code}`)
 }

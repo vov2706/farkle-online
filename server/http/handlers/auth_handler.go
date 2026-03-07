@@ -17,7 +17,7 @@ func NewAuthHandler(service *services.AuthService, userService *services.UserSer
 	return &AuthHandler{service: service, userService: userService}
 }
 
-func (handler AuthHandler) Login(c fiber.Ctx) error {
+func (handler *AuthHandler) Login(c fiber.Ctx) error {
 	userData, err := validateUserData(c)
 
 	if err != nil {
@@ -59,7 +59,7 @@ func (handler AuthHandler) Login(c fiber.Ctx) error {
 	})
 }
 
-func (handler AuthHandler) Register(c fiber.Ctx) error {
+func (handler *AuthHandler) Register(c fiber.Ctx) error {
 	userData, err := validateUserData(c)
 
 	if err != nil {

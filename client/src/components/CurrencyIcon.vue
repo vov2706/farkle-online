@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue"
-
-export type CurrencyType = "bronze" | "silver" | "gold"
+import {CurrencyType} from "@/api/currency.ts";
 
 const props = defineProps<{
   type: CurrencyType
@@ -12,11 +11,11 @@ const size = computed(() => props.size ?? 20)
 
 const color = computed(() => {
   switch (props.type) {
-    case "gold":
+    case CurrencyType.Gold:
       return "#D4A437"
-    case "silver":
+    case CurrencyType.Silver:
       return "#C0C0C0"
-    case "bronze":
+    case CurrencyType.Bronze:
       return "#B87333"
     default:
       return "#999"

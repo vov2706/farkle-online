@@ -1,63 +1,63 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
-import {useRoute, useRouter} from "vue-router";
-import TavernShell from "../../components/TavernShell.vue";
-import UiButton from "../../components/UiButton.vue";
-import {useToast} from "@/composables/useToast.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useConfirm} from "@/composables/useConfirm.ts";
-import {leaveGame, getGame, type Player} from "@/api/game.ts";
-import CurrencyIcon from "@/components/CurrencyIcon.vue";
-import {useWebSocket} from "@vueuse/core";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import TavernShell from "../../components/TavernShell.vue"
+import UiButton from "../../components/UiButton.vue"
+import CurrencyIcon from "@/components/CurrencyIcon.vue"
+
+import { useToast } from "@/composables/useToast.ts"
+import { useConfirm } from "@/composables/useConfirm.ts"
+import { useAuthStore } from "@/stores/auth.ts"
+import { getGame, type Player } from "@/api/game.ts"
+
+import { WsClient } from "@/ws/client"
+import { WsChannels } from "@/ws/channels"
+import type { WsEnvelope } from "@/ws/types"
+import GameStartOverlay from "@/components/GameStartOverlay.vue";
 
 type LobbyPlayer = {
-  id: number;
-  name: string;
-  isHost: boolean;
-  isReady: boolean;
-};
+  name: string
+  isHost: boolean
+  isReady: boolean
+}
 
-const route = useRoute();
-const router = useRouter();
-const toast = useToast();
-const confirm = useConfirm();
+const route = useRoute()
+const router = useRouter()
+const toast = useToast()
+const confirm = useConfirm()
 
-const auth = useAuthStore();
-const me = computed(() => auth.user);
+const auth = useAuthStore()
+const me = computed(() => auth.user)
 
-const maxPlayers = 2;
+const maxPlayers = 2
 
-const game = ref<any>(null);
-const players = ref<LobbyPlayer[]>([]);
+const game = ref<any>(null)
+const players = ref<LobbyPlayer[]>([])
 
-const roomCode = computed(() => String(route.params.code ?? "").toUpperCase());
+const showStart = ref(false)
+const startAt = ref<number>(3)
 
-const filled = computed(() => players.value.length);
-const emptySlots = computed(() => Math.max(0, maxPlayers - players.value.length));
+const roomCode = computed(() => String(route.params.code ?? "").toUpperCase())
+const filled = computed(() => players.value.length)
+const emptySlots = computed(() => Math.max(0, maxPlayers - players.value.length))
 
 const myPlayer = computed(() => {
-  const myId = me.value?.id;
-  if (!myId) return null;
-  return players.value.find((p) => p.id === myId) ?? null;
-});
+  if (!me.value?.username) return null
+  return players.value.find((p) => p.name === me.value?.username) ?? null
+})
 
-const myReady = computed(() => !!myPlayer.value?.isReady);
+const myReady = computed(() => !!myPlayer.value?.isReady)
 
 const isHost = computed(() => {
-  const myId = me.value?.id;
-  if (!myId) return false;
-  return players.value.some((p) => p.id === myId && p.isHost);
-});
+  if (!me.value?.username) return false
+  return players.value.some((p) => p.name === me.value?.username && p.isHost)
+})
 
-const allReady = computed(() => {
-  return filled.value === maxPlayers && players.value.every((p) => p.isReady === true);
-});
-
-const canStart = computed(() => isHost.value && allReady.value);
+const allReady = computed(() => filled.value === maxPlayers && players.value.every((p) => p.isReady === true))
+const canStart = computed(() => isHost.value && allReady.value)
 
 const bet = computed(() => game.value?.bet ?? 0)
 const currency = computed(() => game.value?.currency)
-
 const winningPoints = computed(() => game.value?.winning_points ?? null)
 const joinType = computed(() => game.value?.join_type ?? null)
 
@@ -75,17 +75,17 @@ const joinTypeLabel = computed(() => {
 })
 
 const copyInviteLink = async () => {
-  const link = `${window.location.origin}/lobby/${roomCode.value}`;
+  const link = `${window.location.origin}/lobby/${roomCode.value}`
   try {
-    await navigator.clipboard.writeText(link);
-    toast.push({kind: "success", title: "Copied", message: "Invite link copied."});
+    await navigator.clipboard.writeText(link)
+    toast.push({ kind: "success", title: "Copied", message: "Invite link copied." })
   } catch {
-    toast.push({kind: "error", title: "Copy failed", message: "Clipboard is not available."});
+    toast.push({ kind: "error", title: "Copy failed", message: "Clipboard is not available." })
   }
-};
+}
 
 const onLeaveRoom = async () => {
-  if (!game.value) return;
+  if (!game.value) return
 
   const ok = await confirm.open({
     title: "Leave the lobby?",
@@ -94,86 +94,200 @@ const onLeaveRoom = async () => {
     cancelText: "Stay",
     loadingText: "Leaving...",
     tone: "danger",
-  });
+  })
 
-  if (!ok) return;
+  if (!ok || !channels) return
 
-  try {
-    await leaveGame();
-  } finally {
-    await router.push("/");
-  }
-};
+  channels.emit(
+    lobbyChannel.value,
+    "lobby.player_left",
+    { code: roomCode.value }
+  )
+}
 
-const startGame = () => {
+const emitStartGame = () => {
   if (!canStart.value) {
-    toast.push({kind: "error", title: "Cannot start", message: "Every player must be ready."});
-    return;
+    toast.push({ kind: "error", title: "Cannot start", message: "Every player must be ready." })
+    return
   }
 
-  toast.push({kind: "success", title: "Starting", message: "Game is starting…"});
-  router.push(`/game/${roomCode.value}`);
-};
+  channels?.emit(lobbyChannel.value, "start_game", {code: roomCode.value})
+}
 
-const initWebsockets = () => {
-  if (! auth.isLoggedIn) return
+// Websockets
+const wsConnected = ref(false)
+let client: WsClient | null = null
+let channels: WsChannels | null = null
 
-  return useWebSocket(`ws://127.0.0.1/ws/lobby/${roomCode.value}?token=${auth.token}`, {
-    onConnected(_) {
-      console.log("Connected WS")
-    },
-    onDisconnected(_) {
-      console.log("Disconnected WS")
-    },
-    onError(_, error) {
-      console.error(error)
-    },
-    onMessage(_, event) {
-      let msg: any
+const lobbyChannel = computed(() => `presence-lobby:${roomCode.value}`)
+const listeners: Array<() => void> = []
 
-      try { msg = JSON.parse(String(event.data)) } catch { return }
-
-      if (msg.type === 'lobby.player.ready.toggle') {
-        const p = players.value.find(x => x.id === msg.data.player_id)
-        if (p) p.isReady = msg.data.is_ready
-      }
-
-      if (msg.type === 'lobby.player.connected') {
-        console.log("player connected: ", event.data)
-      }
-
-      if (msg.type === 'game.started') {
-        console.log("game started")
-      }
-    },
+const ensureMeInPlayers = () => {
+  if (!me.value) return
+  if (players.value.some((p) => p.name === me.value?.username)) return
+  players.value.push({
+    name: me.value?.username ?? "You",
+    isHost: false,
+    isReady: false,
   })
 }
 
-const ws = initWebsockets()
+const initWs = () => {
+  if (!auth.isLoggedIn) return
+  if (client && channels) return
+
+  client = new WsClient(auth.token)
+  channels = new WsChannels(client)
+
+  // connected/disconnected
+  listeners.push(
+    client.on((msg: WsEnvelope) => {
+      console.log(msg)
+      if (msg.type === "client.connected") wsConnected.value = true
+      if (msg.type === "client.disconnected") wsConnected.value = false
+    })
+  )
+
+  // subscribe lobby presence
+  channels.subscribe(lobbyChannel.value)
+
+  // ---- Presence базові івенти ----
+  listeners.push(
+    channels.on(lobbyChannel.value, 'presence.here', (msg) => {
+      const users = (msg.data as any)?.users ?? []
+      console.log("here", users)
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'presence.joining', (_) => {
+      // if user is online
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'presence.leaving', (_) => {
+      // if user is not online
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'lobby.player_ready', (msg) => {
+      const data: any = msg.data ?? {}
+      const username = data.player
+      const isReady = !!data.is_ready
+
+      if (!username) return
+      const p = players.value.find((x) => x.name === username)
+      if (p) p.isReady = isReady
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'lobby.player_left', async (msg) => {
+      const data: any = msg.data ?? {}
+      const username = data.player
+
+      if (!username) return
+      const idx = players.value.findIndex((x) => x.name === username)
+      players.value.splice(idx, 1)
+
+      await auth.fetchProfile()
+
+      if (auth.user?.username !== username) {
+        toast.push({ kind: "success", title: 'Notification', message: `Player ${username} left the lobby` })
+      } else {
+        await router.push('/')
+      }
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'lobby.player_joined', async (msg) => {
+      const data: any = msg.data ?? {}
+      const username = data.player
+
+      if (!username) return
+
+      players.value.push({
+        name: username,
+        isHost: false,
+        isReady: false,
+      })
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'lobby.game_deleted', (msg) => {
+      const data: any = msg.data ?? {}
+
+      router.push("/")
+
+      toast.push({ kind: "success", title: 'Notification', message: `Lobby ${data.code} was deleted` })
+    })
+  )
+
+  listeners.push(
+    channels.on(lobbyChannel.value, 'game.started', (msg) => {
+      showStart.value = true
+      startAt.value = msg.data.start_time
+    })
+  )
+
+  client.connect()
+}
 
 const toggleReady = () => {
-  if (!me.value?.id || !ws) return;
+  if (!me.value?.username) return
+  if (!channels) return
 
-  const p = players.value.find((x) => x.id === me.value!.id);
-  if (!p) return;
+  const p = players.value.find((x) => x.name === me.value!.username)
+  if (!p) return
 
-  ws.send(JSON.stringify({
-      type: "lobby.player.ready.toggle",
-      is_ready: !p.isReady
-    })
-  );
+  channels.emit(
+    lobbyChannel.value,
+    "lobby.player_ready",
+    { code: roomCode.value, is_ready: !p.isReady }
+  )
+}
+
+const startGame = () => {
+  showStart.value = false
+
+  router.push(`/game/${roomCode.value}`)
 }
 
 onMounted(async () => {
-  game.value = await getGame(String(route.params.code));
+  game.value = await getGame(String(route.params.code))
+
   players.value = (game.value.players as Player[]).map((p: Player) => ({
-    id: p.id,
     name: p.username,
     isHost: p.is_host,
     isReady: false,
-  }));
-});
+  }))
+
+  ensureMeInPlayers()
+  initWs()
+})
+
+onBeforeUnmount(() => {
+  try {
+    channels?.unsubscribe(lobbyChannel.value)
+  } catch {}
+
+  for (const off of listeners) {
+    try {
+      off()
+    } catch {}
+  }
+  listeners.length = 0
+
+  client?.disconnect()
+  client = null
+  channels = null
+})
 </script>
+
 
 <template>
   <TavernShell>
@@ -200,7 +314,7 @@ onMounted(async () => {
           <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div
               v-for="p in players"
-              :key="p.id"
+              :key="p.name"
               class="flex items-center justify-between rounded-xl border border-wood-700/35 bg-tavern-900/50 px-4 py-3"
             >
               <div class="flex items-center gap-3 min-w-0">
@@ -212,7 +326,7 @@ onMounted(async () => {
                   <div class="font-semibold text-parchment-50 truncate">
                     {{ p.name }}
                     <span v-if="p.isHost" class="ml-1 text-xs text-candle-300">(host)</span>
-                    <span v-if="p.id === me?.id" class="ml-1 text-xs text-parchment-50/60">(you)</span>
+                    <span v-if="p.name === me?.username" class="ml-1 text-xs text-parchment-50/60">(you)</span>
                   </div>
                   <div class="text-xs text-parchment-50/60">
                     {{ p.isReady ? "Ready" : "Not ready" }}
@@ -334,12 +448,13 @@ onMounted(async () => {
                   class="py-3 text-base"
                   v-if="isHost && allReady"
                   variant="primary"
-                  @click="startGame"
+                  @click="emitStartGame"
                 >
                   Start game
                 </UiButton>
 
                 <UiButton
+                  v-if="isHost && maxPlayers > players.length"
                   class="py-3 text-base"
                   variant="ghost"
                   @click="copyInviteLink"
@@ -352,5 +467,10 @@ onMounted(async () => {
         </aside>
       </div>
     </div>
+    <GameStartOverlay
+      :show="showStart"
+      :start-at="startAt"
+      @done="startGame"
+    />
   </TavernShell>
 </template>

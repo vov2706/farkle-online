@@ -8,6 +8,9 @@ import (
 	"crypto/rand"
 	"errors"
 	"math/big"
+	"time"
+
+	"github.com/gofiber/fiber/v3"
 )
 
 type GameService struct {
@@ -56,7 +59,7 @@ func (service *GameService) GetGameByCode(code string) *models.Game {
 		return nil
 	}
 
-	return &game
+	return game
 }
 
 func (service *GameService) GetGameById(id uint) *models.Game {
@@ -88,6 +91,11 @@ func (service *GameService) CreateGame(authUser *models.User, input *inputs.Crea
 
 	code, err := service.generateGameCode(6)
 
+	if err != nil {
+		return nil, errors.New("failed to generate game code")
+
+	}
+
 	game, err := service.gameRepo.CreateGame(*authUser, *input, code)
 
 	if err != nil {
@@ -95,7 +103,7 @@ func (service *GameService) CreateGame(authUser *models.User, input *inputs.Crea
 
 	}
 
-	game, err = service.gameRepo.FindGameById(game.ID, "Players")
+	game, err = service.gameRepo.FindGameByCode(code, "Players")
 
 	if err != nil {
 		return nil, errors.New("not found game")
@@ -106,21 +114,21 @@ func (service *GameService) CreateGame(authUser *models.User, input *inputs.Crea
 	return game, nil
 }
 
-func (service *GameService) JoinToGame(authUser *models.User, gameId uint) (*models.Game, error) {
-	game, err := service.gameRepo.FindGameById(gameId)
+func (service *GameService) JoinToGame(authUser *models.User, code string) (*models.Game, error) {
+	game, err := service.gameRepo.FindGameByCode(code)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if err = service.gameRepo.AttachUserToGame(*authUser, *game); err != nil {
+	if err = service.gameRepo.AttachUserToGame(authUser, game); err != nil {
 		return nil, err
 	}
 
 	return game, nil
 }
 
-func (service *GameService) GetCurrentGame(authUser models.User) *models.Game {
+func (service *GameService) GetCurrentGame(authUser *models.User) *models.Game {
 	game, err := service.gameRepo.FindCurrentGame(authUser.ID)
 
 	if err != nil {
@@ -130,19 +138,44 @@ func (service *GameService) GetCurrentGame(authUser models.User) *models.Game {
 	return &game
 }
 
-func (service *GameService) LeaveCurrentGame(authUser models.User) error {
+func (service *GameService) LeaveCurrentGame(authUser *models.User) error {
 	game := service.GetCurrentGame(authUser)
+
+	return service.LeaveGame(game, authUser)
+}
+
+func (service *GameService) LeaveGame(game *models.Game, authUser *models.User) error {
 	var err error
 
 	if game != nil {
 		if authUser.ID == game.CreatorID {
-			err = service.gameRepo.DeleteGame(authUser, *game)
+			err = service.gameRepo.DeleteGame(authUser, game)
 		} else {
-			err = service.gameRepo.DetachUserFromGame(authUser, *game)
+			err = service.gameRepo.DetachUserFromGame(authUser, game)
 		}
 	}
 
 	return err
+}
+
+func (service *GameService) StartGame(authUser *models.User, gameCode string) (*models.Game, error) {
+	game, err := service.gameRepo.FindNewGameByCodeAndCreator(gameCode, authUser.ID)
+
+	if err != nil {
+		return nil, fiber.ErrForbidden
+	}
+
+	timeToStart := time.Now().Add(time.Second * 35)
+
+	//err = service.gameRepo.StartGame(game, timeToStart)
+	//
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	game.StartedAt = &timeToStart
+
+	return game, nil
 }
 
 func (service *GameService) generateGameCode(length int) (string, error) {

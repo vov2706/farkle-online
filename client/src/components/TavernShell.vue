@@ -3,6 +3,8 @@ import { ref, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import UiButton from './UiButton.vue'
 import { useAuthStore } from '@/stores/auth.ts'
+import CurrencyIcon from "@/components/CurrencyIcon.vue";
+import {CurrencyType} from "@/api/currency.ts";
 
 const props = withDefaults(defineProps<{ withHeader?: boolean; withFooter?: boolean }>(), {
   withHeader: true,
@@ -13,7 +15,7 @@ const router = useRouter()
 const auth = useAuthStore()
 const user = auth.user
 const logout = auth.logout
-const balance = user?.balance
+const balance = user?.balances.find(b => b.currency.slug === CurrencyType.Bronze)
 
 const menuOpen = ref(false)
 const menuWrapRef = ref<HTMLElement | null>(null)
@@ -82,10 +84,14 @@ const doLogout = () => {
           >
             <span>👤 {{ user?.username }}</span>
             <span class="mx-1 h-4 w-px bg-parchment-50/20"></span>
+
+            <span class="flex items-center gap-1 text-parchment-50/90">
+              <span class="tabular-nums text-md font-bold">{{ balance?.amount ?? 0 }}</span>
+              <CurrencyIcon :size="20" :type="balance?.currency.slug as CurrencyType"/>
+            </span>
             <span class="ml-1 text-parchment-50/60">▾</span>
           </button>
 
-          <!-- Popover -->
           <!-- Popover -->
           <transition name="fade-pop">
             <div

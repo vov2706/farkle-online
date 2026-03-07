@@ -15,7 +15,7 @@ func NewCurrencyHandler(repo *repositories.CurrencyRepository) *CurrencyHandler 
 	return &CurrencyHandler{repo: repo}
 }
 
-func (handler CurrencyHandler) Index(c fiber.Ctx) error {
+func (handler *CurrencyHandler) Index(c fiber.Ctx) error {
 	currencies, err := handler.repo.GetCurrencies()
 
 	if err != nil {

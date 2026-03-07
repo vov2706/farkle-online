@@ -2,14 +2,15 @@ package responses
 
 import (
 	"app/models"
+	"time"
 )
 
 type GameResource struct {
-	ID            uint              `json:"id"`
 	Code          string            `json:"code"`
 	Bet           uint              `json:"bet"`
 	WinningPoints uint              `json:"winning_points"`
 	JoinType      string            `json:"join_type"`
+	StartedAt     *time.Time        `json:"started_at"`
 	Currency      *CurrencyResource `json:"currency"`
 	Players       []PlayerResource  `json:"players"`
 	Creator       *UserResource     `json:"creator"`
@@ -32,7 +33,7 @@ func NewPlayerResource(user models.User, isHost bool) PlayerResource {
 
 func NewGameResource(game models.Game) GameResource {
 	rs := GameResource{
-		ID:            game.ID,
+		StartedAt:     game.StartedAt,
 		Code:          game.Code,
 		Bet:           game.Bet,
 		WinningPoints: game.WinningPoints,

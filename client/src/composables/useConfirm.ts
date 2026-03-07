@@ -36,8 +36,6 @@ export function useConfirm() {
       ...opts,
     };
 
-    console.log(options.value)
-
     isOpen.value = true;
     loading.value = false;
 

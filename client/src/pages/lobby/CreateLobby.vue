@@ -3,7 +3,7 @@ import {computed, onMounted, ref} from 'vue'
 import TavernShell from '../../components/TavernShell.vue'
 import UiButton from '../../components/UiButton.vue'
 import { useRouter } from 'vue-router'
-import {type Currency, getCurrencies} from "@/api/common.ts";
+import {type Currency, getCurrencies} from "@/api/currency.ts";
 import UiSelect from "@/components/UiSelect.vue";
 import {createGame, type CreateGameInput, type Game, JoinType} from "@/api/game.ts";
 import CurrencyIcon, {type CurrencyType} from "@/components/CurrencyIcon.vue";

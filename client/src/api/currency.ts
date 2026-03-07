@@ -6,6 +6,12 @@ export interface Currency {
   name: string
 }
 
+export enum CurrencyType {
+  Bronze = "bronze",
+  Silver = "silver",
+  Gold = "gold"
+}
+
 export const getCurrencies = async (): Promise<Currency[]> => {
   const {data} = await fetchApi.get('/currencies');
 

@@ -16,14 +16,14 @@ func NewUserHandler(auth *services.AuthService, gameService *services.GameServic
 	return &UserHandler{auth: auth, gameService: gameService}
 }
 
-func (handler UserHandler) GetProfile(c fiber.Ctx) error {
+func (handler *UserHandler) GetProfile(c fiber.Ctx) error {
 	user, err := handler.auth.GetAuthUser(c, "Balances.Currency")
 
 	if err != nil {
 		return err
 	}
 
-	user.CurrentGame = handler.gameService.GetCurrentGame(*user)
+	user.CurrentGame = handler.gameService.GetCurrentGame(user)
 
 	return c.JSON(responses.UserResponse{
 		Data: responses.NewUserResource(*user),
