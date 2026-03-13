@@ -16,11 +16,14 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/farkle-online
+            cd ${{ secrets.SERVER_PATH }}
             git pull
-            cd server
-            go build -o farkle-online
-            sudo systemctl restart farkle-online
-            cd ../client
+            
+            cd ${{ secrets.SERVER_PATH }}/client
             yarn
             yarn build
+
+            cd ${{ secrets.SERVER_PATH }}/server
+            go build -o farkle-online
+
+            sudo systemctl restart farkle-online
