@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import TavernShell from "@/components/TavernShell.vue";
-import UiButton from "@/components/UiButton.vue";
+import TavernShell from "@/components/wrappers/TavernShell.vue";
+import UiButton from "@/components/form/UiButton.vue";
 import { useAuthStore } from "@/stores/auth.ts";
 
 const auth = useAuthStore();

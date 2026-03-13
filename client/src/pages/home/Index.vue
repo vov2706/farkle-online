@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TavernShell from '../../components/TavernShell.vue'
-import MenuLink from '../../components/MenuLink.vue'
+import TavernShell from '@/components/wrappers/TavernShell.vue'
+import MenuLink from '@/components/menu/MenuLink.vue'
 import {useAuthStore} from "@/stores/auth.ts";
 
 const auth = useAuthStore();

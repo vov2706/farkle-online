@@ -2,8 +2,8 @@
 import { onBeforeUnmount, onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import * as THREE from 'three'
-import TavernShell from '../../components/TavernShell.vue'
-import UiButton from '../../components/UiButton.vue'
+import TavernShell from '@/components/wrappers/TavernShell.vue'
+import UiButton from '@/components/form/UiButton.vue'
 
 const route = useRoute()
 const roomCode = computed(() => String(route.params.code ?? '').toUpperCase())
@@ -194,7 +194,11 @@ function applyCameraShake(t: number) {
 // ---------- scoring ----------
 function countFaces(values: number[]) {
   const c = [0, 0, 0, 0, 0, 0, 0]
-  for (const v of values) c[v]++
+  for (const v of values) {
+    if (c[v]) {
+      c[v]++
+    }
+  }
   return c
 }
 
@@ -208,8 +212,8 @@ function isStraight(values: number[], target: number[]) {
 function hasAnyScore(values: number[]) {
   if (!values.length) return false
   const c = countFaces(values)
-  if (c[1] > 0 || c[5] > 0) return true
-  for (let f = 1; f <= 6; f++) if (c[f] >= 3) return true
+  if (c[1] && c[1] > 0 || c[5] && c[5] > 0) return true
+  for (let f = 1; f <= 6; f++) if ((c[f] ?? 0) >= 3) return true
   return (
     isStraight(values, [1, 2, 3, 4, 5, 6]) ||
     isStraight(values, [1, 2, 3, 4, 5]) ||
@@ -287,7 +291,7 @@ function makePipTexture(value: number) {
     5: [[left, top], [right, top], [mid, mid], [left, bottom], [right, bottom]],
     6: [[left, top], [left, mid], [left, bottom], [right, top], [right, mid], [right, bottom]],
   }
-  layouts[value].forEach(([x, y]) => pip(x, y))
+  layouts[value]?.forEach(([x, y]) => pip(x, y))
 
   const tex = new THREE.CanvasTexture(c)
   tex.colorSpace = THREE.SRGBColorSpace
@@ -344,10 +348,10 @@ function applyDieVisual(d: Die) {
   }
 
   d.mesh.scale.set(1, 1, 1)
-  d.mesh.material.forEach((m) => {
-    m.emissive.setHex(d.selected ? 0x6b4a1b : 0x000000)
-    m.emissiveIntensity = d.selected ? 0.14 : 0
-  })
+  // d.mesh.material.forEach((m) => {
+    // m.emissive.setHex(d.selected ? 0x6b4a1b : 0x000000)
+    // m.emissiveIntensity = d.selected ? 0.14 : 0
+  // })
 }
 
 function createDie(playX: number, playZ: number, id: string) {
@@ -400,7 +404,10 @@ function prepareThrowTargets() {
     d.value = Math.floor(Math.random() * 6) + 1
 
     d.dropFrom.set(cupCenterPos.x + 0.22, cupCenterPos.y + 0.82, cupCenterPos.z - 0.1)
-    d.dropTo.set(targets[idx].x, DIE_Y, targets[idx].z)
+
+    if (targets[idx]) {
+      d.dropTo.set(targets[idx].x, DIE_Y, targets[idx].z)
+    }
 
     d.settling = true
     d.settleDelayMs = idx * 55
@@ -498,7 +505,9 @@ function takeSelectedAndContinue() {
       d.inPlay = true
       d.selected = false
       d.mesh.visible = true
-      d.mesh.position.set(targets[idx].x, DIE_Y, targets[idx].z)
+      if (targets[idx]) {
+        d.mesh.position.set(targets[idx].x, DIE_Y, targets[idx].z)
+      }
       d.dropTo.copy(d.mesh.position)
       applyDieVisual(d)
     })
@@ -527,19 +536,16 @@ function resetTurn() {
     d.inPlay = true
     d.selected = false
     d.mesh.visible = true
-    d.mesh.position.set(targets[idx].x, DIE_Y, targets[idx].z)
+
+    if (targets[idx]) {
+      d.mesh.position.set(targets[idx].x, DIE_Y, targets[idx].z)
+    }
+
     d.dropTo.copy(d.mesh.position)
     applyDieVisual(d)
   })
 
   turnScore.value = 0
-}
-
-function endTurnAfterFarkle() {
-  message.value = 'New turn. Roll all dice.'
-  lastThrowScorePreview.value = null
-  mustTakeAfterThrow.value = false
-  resetTurn()
 }
 
 function roll() {
@@ -657,7 +663,7 @@ function initThree() {
     const hits = raycaster.intersectObjects(meshes, false)
     if (!hits.length) return
 
-    const hit = hits[0].object as THREE.Mesh
+    const hit = hits[0]?.object as THREE.Mesh
     const id = String(hit.userData?.dieId ?? '')
     toggleSelectDieById(id)
   }

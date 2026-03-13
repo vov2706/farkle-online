@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import TavernShell from '../../components/TavernShell.vue'
-import UiButton from '../../components/UiButton.vue'
+import TavernShell from '@/components/wrappers/TavernShell.vue'
+import UiButton from '@/components/form/UiButton.vue'
 import {useAuthStore} from "@/stores/auth.ts";
+import ShowPasswordIcon from "@/components/icons/ShowPasswordIcon.vue";
 
 const auth = useAuthStore()
 
@@ -10,6 +11,8 @@ const username = ref('')
 const password = ref('')
 const loading = ref(false)
 const confirmPassword = ref('')
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 const localError = ref('')
 
@@ -24,7 +27,9 @@ const submit = async () => {
   loading.value = true
 
   auth.register(username.value.trim(), password.value)
-    .catch(e => localError.value = e.message)
+    .catch((err) => {
+      localError.value = err.response.data.message
+    })
     .finally(() => loading.value = false)
 }
 </script>
@@ -58,27 +63,47 @@ const submit = async () => {
           </div>
           <div class="text-md">
             <label class="mt-3 block font-semibold">Password</label>
-            <input
-              v-model="password"
-              type="password"
-              autocomplete="new-password"
-              class="mt-1 w-full rounded-xl border border-wood-700/35 bg-parchment-50 px-4 py-2 text-ink-900 outline-none
-               focus:ring-2 focus:ring-candle-400/60"
-              placeholder="••••••••"
-              required
-            />
+            <div
+              class="mt-1 flex items-center rounded-xl border border-wood-700/35 bg-parchment-50 focus-within:ring-2 focus-within:ring-candle-400/60"
+            >
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                v-model="password"
+                placeholder="••••••••"
+                required
+                class="w-full bg-transparent px-4 py-2 text-ink-900 outline-none"
+              />
+
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="flex shrink-0 items-center justify-center px-4 text-ink-900/55 transition hover:text-ink-900"
+              >
+                <ShowPasswordIcon :show-password="showPassword" />
+              </button>
+            </div>
           </div>
           <div class="text-md">
             <label class="mt-3 block font-semibold">Confirm password</label>
-            <input
-              v-model="confirmPassword"
-              type="password"
-              autocomplete="new-password"
-              class="mt-1 w-full rounded-xl border border-wood-700/35 bg-parchment-50 px-4 py-2 text-ink-900 outline-none
-               focus:ring-2 focus:ring-candle-400/60"
-              placeholder="••••••••"
-              required
-            />
+            <div
+              class="mt-1 flex items-center rounded-xl border border-wood-700/35 bg-parchment-50 focus-within:ring-2 focus-within:ring-candle-400/60"
+            >
+              <input
+                :type="showConfirmPassword ? 'text' : 'password'"
+                v-model="confirmPassword"
+                placeholder="••••••••"
+                required
+                class="w-full bg-transparent px-4 py-2 text-ink-900 outline-none"
+              />
+
+              <button
+                type="button"
+                @click="showConfirmPassword = !showConfirmPassword"
+                class="flex shrink-0 items-center justify-center px-4 text-ink-900/55 transition hover:text-ink-900"
+              >
+                <ShowPasswordIcon :show-password="showConfirmPassword" />
+              </button>
+            </div>
           </div>
           <div class="mt-4 flex gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex gap-2">

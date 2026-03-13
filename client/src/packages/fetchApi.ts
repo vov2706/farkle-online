@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {useAuthStore} from "../stores/auth.ts";
-import {useToast} from "../composables/useToast.ts";
+import {useToast} from "@/hooks/useToast.ts";
+import router from "@/routes";
 
 const fetchApi = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL + '/api/',
@@ -50,13 +51,15 @@ fetchApi.interceptors.response.use(
       if (error?.response.status === 403) {
         useToast().push({title: 'Error', message: 'Forbidden', kind: 'error'})
       } else {
-        useToast().push({title: 'Error', message: err, kind: 'error'})}
+        useToast().push({title: 'Error', message: err, kind: 'error'})
+      }
     } else {
       useToast().push({title: 'Error', message: error?.message, kind: 'error'})
     }
 
     if (errorResponse?.status === 401) {
-      window.location.href = '/login';
+      await router.push('/login');
+      // window.location.href = '/login';
     }
 
     return Promise.reject(error)

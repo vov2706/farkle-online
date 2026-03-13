@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ToastsHost from "./components/ToastsHost.vue";
-import { useConfirm } from "@/composables/useConfirm";
-import UiConfirmModal from "@/components/UiConfirmModal.vue";
+import ToastsHost from "@/components/toasts/ToastsHost.vue";
+import { useConfirm } from "@/hooks/useConfirm";
+import UiConfirmModal from "@/components/modals/UiConfirmModal.vue";
 
 const confirm = useConfirm();
 </script>

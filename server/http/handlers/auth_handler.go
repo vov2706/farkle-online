@@ -45,7 +45,7 @@ func (handler *AuthHandler) Login(c fiber.Ctx) error {
 		})
 	}
 
-	token, err := handler.service.CreateToken(*user)
+	token, err := handler.service.CreateToken(user)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -82,11 +82,18 @@ func (handler *AuthHandler) Register(c fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
+			"message": "Failed to create user",
 		})
 	}
 
-	token, err := handler.service.CreateToken(*user)
+	user, err = handler.userService.GetUserByUsername(userData.Username)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to load created user",
+		})
+	}
+
+	token, err := handler.service.CreateToken(user)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

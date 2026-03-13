@@ -44,7 +44,7 @@ func (service AuthService) GetAuthUser(c fiber.Ctx, relations ...string) (*model
 	return user, nil
 }
 
-func (service AuthService) CreateToken(u models.User) (t string, err error) {
+func (service AuthService) CreateToken(u *models.User) (t string, err error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["sub"] = u.ID

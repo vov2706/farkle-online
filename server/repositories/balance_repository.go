@@ -16,9 +16,7 @@ func NewBalanceRepository(DB *gorm.DB) *BalanceRepository {
 }
 
 func (repo *BalanceRepository) WithTx(tx *gorm.DB) *BalanceRepository {
-	repo.DB = tx
-
-	return repo
+	return &BalanceRepository{DB: tx}
 }
 
 func (repo *BalanceRepository) FindByUserAndCurrency(user models.User, currencyId uint) (*models.Balance, error) {

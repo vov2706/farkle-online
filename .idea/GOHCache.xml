@@ -287,6 +287,13 @@
     </option>
     <option name="scannedPathMapping">
       <map>
+        <entry key="file://$USER_HOME$/go/pkg/mod/github.com/gofiber/fiber/v3@v3.1.0/middleware/static/static.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1772546032469" />
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/server/config/config.go">
           <value>
             <ScannedPath>
@@ -346,7 +353,7 @@
         <entry key="file://$PROJECT_DIR$/server/http/handlers/auth_handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772750702107" />
+              <option name="lastModified" value="1773010888934" />
               <option name="schema">
                 <list>
                   <option value="AuthHandler" />
@@ -551,7 +558,7 @@
         <entry key="file://$PROJECT_DIR$/server/repositories/balance_repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772489196234" />
+              <option name="lastModified" value="1773012257272" />
               <option name="schema">
                 <list>
                   <option value="BalanceRepository" />
@@ -587,7 +594,7 @@
         <entry key="file://$PROJECT_DIR$/server/repositories/user_repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772489196241" />
+              <option name="lastModified" value="1773012230300" />
               <option name="schema">
                 <list>
                   <option value="UserRepository" />
@@ -599,7 +606,7 @@
         <entry key="file://$PROJECT_DIR$/server/routes/router.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772923522536" />
+              <option name="lastModified" value="1773355958199" />
             </ScannedPath>
           </value>
         </entry>
@@ -613,7 +620,7 @@
         <entry key="file://$PROJECT_DIR$/server/services/auth_service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772402353970" />
+              <option name="lastModified" value="1773010888939" />
               <option name="schema">
                 <list>
                   <option value="AuthService" />
@@ -625,7 +632,7 @@
         <entry key="file://$PROJECT_DIR$/server/services/game_service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772923522545" />
+              <option name="lastModified" value="1773003359084" />
               <option name="schema">
                 <list>
                   <option value="GameService" />
@@ -776,6 +783,6 @@
         <entry key="websockets" value="Websockets" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1772918141590" />
+    <option name="lastTimeChecked" value="1773347284677" />
   </component>
 </project>

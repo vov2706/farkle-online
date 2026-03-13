@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import {useRouter} from "vue-router";
-import TavernShell from "../../components/TavernShell.vue";
+import TavernShell from "@/components/wrappers/TavernShell.vue";
 import {type Game, getGames, joinGame} from "@/api/game";
-import CurrencyIcon from "@/components/CurrencyIcon.vue";
+import CurrencyIcon from "@/components/icons/CurrencyIcon.vue";
 import type {PaginationMeta} from "@/interfaces/pagination.ts";
 import type {CurrencyType} from "@/api/currency.ts";
 

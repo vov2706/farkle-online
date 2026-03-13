@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import TavernShell from "../../components/TavernShell.vue"
-import UiButton from "../../components/UiButton.vue"
-import CurrencyIcon from "@/components/CurrencyIcon.vue"
+import TavernShell from "@/components/wrappers/TavernShell.vue"
+import UiButton from "@/components/form/UiButton.vue"
+import CurrencyIcon from "@/components/icons/CurrencyIcon.vue"
 
-import { useToast } from "@/composables/useToast.ts"
-import { useConfirm } from "@/composables/useConfirm.ts"
+import { useToast } from "@/hooks/useToast.ts"
+import { useConfirm } from "@/hooks/useConfirm.ts"
 import { useAuthStore } from "@/stores/auth.ts"
 import { getGame, type Player } from "@/api/game.ts"
 
 import { WsClient } from "@/ws/client"
 import { WsChannels } from "@/ws/channels"
 import type { WsEnvelope } from "@/ws/types"
-import GameStartOverlay from "@/components/GameStartOverlay.vue";
+import GameStartOverlay from "@/components/overlays/GameStartOverlay.vue";
 
 type LobbyPlayer = {
   name: string

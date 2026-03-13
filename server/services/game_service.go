@@ -115,6 +115,12 @@ func (service *GameService) CreateGame(authUser *models.User, input *inputs.Crea
 }
 
 func (service *GameService) JoinToGame(authUser *models.User, code string) (*models.Game, error) {
+	currentGame := service.GetCurrentGame(authUser)
+
+	if currentGame != nil {
+		return nil, errors.New("you are already in a game")
+	}
+
 	game, err := service.gameRepo.FindGameByCode(code)
 
 	if err != nil {

@@ -18,9 +18,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (repo *UserRepository) WithTx(tx *gorm.DB) *UserRepository {
-	repo.DB = tx
-
-	return repo
+	return &UserRepository{DB: tx}
 }
 
 func (repo *UserRepository) GetUserById(id uint, relations ...string) (*models.User, error) {

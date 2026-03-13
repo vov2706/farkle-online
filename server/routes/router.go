@@ -3,9 +3,12 @@ package routes
 import (
 	"app/container"
 	"app/http/middlewares"
+	"path/filepath"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/logger"
+	"github.com/gofiber/fiber/v3/middleware/static"
 )
 
 func SetupRoutes(app *fiber.App, ctn *container.Container) {
@@ -30,6 +33,24 @@ func SetupRoutes(app *fiber.App, ctn *container.Container) {
 
 	// Currencies
 	api.Get("/currencies", ctn.Handlers.Currency.Index)
+
+	dist := "../client/dist"
+
+	// Frontend assets
+	app.Use("/assets", static.New(filepath.Join(dist, "assets")))
+	app.Use("/images", static.New(filepath.Join(dist, "images")))
+	app.Use("/favicon.ico", static.New(filepath.Join(dist, "favicon.ico")))
+
+	// Frontend
+	app.Get("*", func(c fiber.Ctx) error {
+		path := c.Path()
+
+		if strings.HasPrefix(path, "/api") {
+			return fiber.ErrNotFound
+		}
+
+		return c.SendFile(filepath.Join(dist, "index.html"))
+	})
 
 	// 404
 	app.Use(func(c fiber.Ctx) error {

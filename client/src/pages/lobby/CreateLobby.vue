@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {computed, onMounted, ref} from 'vue'
-import TavernShell from '../../components/TavernShell.vue'
-import UiButton from '../../components/UiButton.vue'
+import TavernShell from '@/components/wrappers/TavernShell.vue'
+import UiButton from '@/components/form/UiButton.vue'
 import { useRouter } from 'vue-router'
-import {type Currency, getCurrencies} from "@/api/currency.ts";
-import UiSelect from "@/components/UiSelect.vue";
+import {type Currency, CurrencyType, getCurrencies} from "@/api/currency.ts";
+import UiSelect from "@/components/form/UiSelect.vue";
 import {createGame, type CreateGameInput, type Game, JoinType} from "@/api/game.ts";
-import CurrencyIcon, {type CurrencyType} from "@/components/CurrencyIcon.vue";
+import CurrencyIcon from "@/components/icons/CurrencyIcon.vue";
 
 const types = [
   {slug: JoinType.ANYONE, title: 'Anyone can join', subtitle: 'Visible & open'},

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import fetchApi from "@/packages/fetchApi.ts";
 import {getProfile, type User} from "@/api/user.ts";
 import router from "@/routes";
-import {useToast} from "@/composables/useToast.ts";
+import {useToast} from "@/hooks/useToast.ts";
 
 const ACCESS_TOKEN = "access_token";
 

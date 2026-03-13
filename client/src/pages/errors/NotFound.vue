@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import TavernShell from '@/components/TavernShell.vue'
-import UiButton from '@/components/UiButton.vue'
+import TavernShell from '@/components/wrappers/TavernShell.vue'
+import UiButton from '@/components/form/UiButton.vue'
 
 const router = useRouter()
 
