@@ -294,6 +294,13 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/.gitignore.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1773435250233" />
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/server/config/config.go">
           <value>
             <ScannedPath>
@@ -320,7 +327,7 @@
         <entry key="file://$PROJECT_DIR$/server/database/connect.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772400972279" />
+              <option name="lastModified" value="1773431056437" />
             </ScannedPath>
           </value>
         </entry>
@@ -353,7 +360,7 @@
         <entry key="file://$PROJECT_DIR$/server/http/handlers/auth_handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1773010888934" />
+              <option name="lastModified" value="1773435020240" />
               <option name="schema">
                 <list>
                   <option value="AuthHandler" />
@@ -644,7 +651,7 @@
         <entry key="file://$PROJECT_DIR$/server/services/user_service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1772489391850" />
+              <option name="lastModified" value="1773435020233" />
               <option name="schema">
                 <list>
                   <option value="UserService" />

@@ -4,6 +4,7 @@ import (
 	"app/database"
 	"app/models"
 	"app/repositories"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -38,7 +39,7 @@ func (service UserService) CreateUser(username, password string) (*models.User, 
 	currency, err := service.currencyRepo.FindBySlug(models.BRONZE)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("currency not found")
 	}
 
 	var user *models.User
@@ -50,13 +51,13 @@ func (service UserService) CreateUser(username, password string) (*models.User, 
 		user, err = userRepo.CreateUser(username, password)
 
 		if err != nil {
-			return err
+			return errors.New("failed to create user")
 		}
 
 		balance, err := balanceRepo.CreateBalance(user.ID, currency.ID, 1000)
 
 		if err != nil {
-			return err
+			return errors.New("failed to create balance")
 		}
 
 		user.Balances = []models.Balance{*balance}

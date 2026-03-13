@@ -1,5 +1,5 @@
 .env
-fiber.db
+*.db
 go.sum
 go.mod
 tmp/*
