@@ -4,8 +4,6 @@ import (
 	"app/config"
 	"app/models"
 	"fmt"
-	//"gorm.io/driver/sqlite"
-	//"gorm.io/gorm"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -16,22 +14,12 @@ func Connect() {
 
 	dbName := config.Config("DB_NAME")
 
-	//newLogger := logger.New(
-	//	log.New(os.Stdout, "\r\n", log.LstdFlags),
-	//	logger.Config{
-	//		LogLevel:                  logger.Info,
-	//		IgnoreRecordNotFoundError: true,
-	//		Colorful:                  true,
-	//	},
-	//)
-
 	DB, err = gorm.Open(sqlite.Open(dbName+".db"), &gorm.Config{
 		SkipDefaultTransaction: true,
-		//Logger:                 newLogger,
 	})
 
 	if err != nil {
-		panic("failed to connect database")
+		panic(fmt.Errorf("failed to connect database: %w", err))
 	}
 
 	sqlDB, err := DB.DB()
